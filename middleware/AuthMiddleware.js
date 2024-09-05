@@ -1,21 +1,45 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
 
-const auth = async (req, res, next) => {
-  const token = req.header('Authorization').replace('Bearer ', '');
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findOne({ _id: decoded._id, 'tokens.token': token });
 
-    if (!user) {
-      throw new Error();
+
+class Token {
+
+    static verifyToken(req, res,next) { 
+       
+        const token = req.headers.token;
+        if (token) {
+            
+            try {
+            const secret=  process.env.JWT_SECRET
+                
+                const decoded = jwt.verify(token, secret);
+                req.user = decoded 
+                 
+                next()
+            } 
+            catch (err) {
+                return res.status(500).json({message : err.message})
+            }
+    
+        } else {
+            return res.status(401).json('Required Login')
+        }
+    } 
+    
+    static authorize(roles) {
+        return (req, res, next) => {
+            if (!req.user || !roles.includes(req.user.role)) {
+                return res.status(403).json({
+                    errors: [{ msg: "Unauthorized access" }]
+                });
+            }
+            next();
+        };
     }
+    
 
-    req.user = user;
-    next();
-  } catch (e) {
-    res.status(401).send({ error: 'Please authenticate.' });
   }
-};
 
-module.exports = auth;
+
+
+module.exports = Token 

@@ -1,14 +1,15 @@
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt');
+const dotenv = require('dotenv');
 const User = require('../models/UserModel');
 const PasswordReset = require('../models/PasswordResetModel');
-
+dotenv.config();
 // Create Nodemailer transporter
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    service: process.env.EMAIL_SERVICE, // استخدام القيم من ملف البيئة
     auth: {
-        user: 'husseinsabry525@gmail.com',
-        pass: 'guro jkjj jphq olcv'
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
     }
 });
 
@@ -17,18 +18,22 @@ class RestPassword {
         const { reqEmail } = req.body;
 
         try {
-            // Delete any existing code for the email
+            const user = await User.findOne({ email: reqEmail });
+        if (!user) {
+            return res.status(404).json({ message: 'Email does not exist' });
+        }
+            // حذف أي أكواد موجودة مسبقًا للبريد الإلكتروني
             await PasswordReset.deleteMany({ email: reqEmail });
 
-            // Generate a new code
+            // توليد كود جديد
             const randomCode = Math.floor(100000 + Math.random() * 900000);
             const hashedCode = await bcrypt.hash(randomCode.toString(), 10);
 
-            // Insert the new code into the database
+            // إدخال الكود الجديد في قاعدة البيانات
             const passwordReset = new PasswordReset({ email: reqEmail, code: hashedCode });
             await passwordReset.save();
 
-            // Send the code via email
+            // إرسال الكود عبر البريد الإلكتروني
             sendMail(reqEmail, randomCode, res);
         } catch (error) {
             console.error(error);
@@ -44,26 +49,26 @@ class RestPassword {
         }
 
         try {
-            // Retrieve reset information from the database
+            // استرجاع معلومات الاستعادة من قاعدة البيانات
             const resetInfo = await PasswordReset.findOne({ email: reqEmail });
 
             if (!resetInfo) {
                 return res.status(400).json({ message: 'No reset code found for this email' });
             }
 
-            // Compare the hashed code
+            // مقارنة الكود المشفر
             const isCodeValid = await bcrypt.compare(code, resetInfo.code);
             if (!isCodeValid) {
                 return res.status(400).json({ message: 'Invalid reset code' });
             }
 
-            // Hash the new password
+            // تشفير كلمة المرور الجديدة
             const hashedPassword = await bcrypt.hash(password, 10);
 
-            // Update the password in the database
+            // تحديث كلمة المرور في قاعدة البيانات
             await User.updateOne({ email: reqEmail }, { password: hashedPassword });
 
-            // Delete reset information from the database
+            // حذف معلومات الاستعادة من قاعدة البيانات
             await PasswordReset.deleteMany({ email: reqEmail });
 
             return res.status(200).json({ message: 'Password updated successfully' });
@@ -77,7 +82,7 @@ class RestPassword {
 // Function to send mail
 function sendMail(reqEmail, randomCode, res) {
     const mailOptions = {
-        from: 's7s',
+        from: process.env.EMAIL_FROM, // استخدام القيمة من ملف البيئة
         to: reqEmail,
         subject: 'Your 6-digit Code',
         text: `Your 6-digit code is: ${randomCode}`

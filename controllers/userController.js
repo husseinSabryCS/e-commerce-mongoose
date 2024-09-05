@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const User = require('../models/UserModel');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const Product = require('../models/ProductModel');
@@ -68,6 +68,23 @@ exports.removeFromCart = async (req, res) => {
   }
 };
 
+exports.getWishlist = async (req, res) => {
+  try {
+    const userId = req.user._id; // Assumes `req.user` contains the authenticated user's data
+
+    // Find the user by their ID and populate the wishlist with product details
+    const user = await User.findById(userId).populate('wishlist'); // Assuming wishlist is an array of product IDs
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Return the populated wishlist
+    return res.status(200).json({ wishlist: user.wishlist });
+  } catch (error) {
+    return res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
 
 exports.removeFromWishlist = async (req, res) => {
   try {
