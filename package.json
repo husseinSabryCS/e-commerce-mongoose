@@ -15,9 +15,14 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app"
+    "start": "nodemon app",
+    "run":"node app.js"
+  },
+  "engines": {
+   "node":"16.x"
   },
   "author": "",
   "license": "ISC",
   "description": ""
+ 
 }
