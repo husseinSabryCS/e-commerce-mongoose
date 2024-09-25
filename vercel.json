@@ -13,7 +13,7 @@
     }
   ],
   "env": {
-    "NODE_ENV": "production",
-    "DATABASE_URL": "mongodb+srv://hussein:s7s_123@learn-mongo-db.fgsl5mb.mongodb.net/ecommerceWeb?retryWrites=true&w=majority&appName=learn-mongo-db" 
+    "NODE_ENV": "production"
+  
   }
 }
