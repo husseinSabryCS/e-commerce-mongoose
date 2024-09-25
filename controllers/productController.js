@@ -25,19 +25,27 @@ exports.getProductById = async (req, res) => {
 exports.addProduct = async (req, res) => {
   try {
     const { name, description, price, category } = req.body;
-    console.log(name, description, price, category)
-    const photos = req.files ? req.files.map(file => file.path) : [];
-console.log(photos);
+    console.log(name, description, price, category);
 
-    const newProduct = new Product({ name, description, price, category, photos });
+    const photos = req.files ? req.files.map(file => file.path) : [];
+    console.log(photos);
+
+    const newProduct = new Product({
+      name,
+      description,
+      price,
+      category,
+      photos
+    });
+
     await newProduct.save();
 
     res.status(201).json(newProduct);
   } catch (error) {
+    console.error(error); // لطباعة الخطأ في حال حدوثه
     res.status(500).json({ error: 'Server error' });
   }
 };
-
 // Update Product
 exports.updateProduct = async (req, res) => {
   try {

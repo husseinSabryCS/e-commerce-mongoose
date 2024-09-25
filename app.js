@@ -6,9 +6,11 @@ const productRoutes = require('./routes/ProductRoutes');
 const CartWishlistRoutes = require('./routes/CartWishlistRoutes');
 const RestPasswordRouter = require('./routes/RestPasswordRouter');
 const Token = require('./middleware/AuthMiddleware');
+const asyncHandler = require('express-async-handler');
+
+const cors = require('cors');
 // const userRoutes = require('./routes/');
 const bodyParser = require('body-parser');
-
 
 dotenv.config();
 
@@ -17,6 +19,7 @@ connectDB();
 
 const app = express();
 
+app.use(cors());
 app.use(bodyParser.json());
 // Middleware
 app.use(express.json());
