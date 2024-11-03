@@ -14,7 +14,11 @@ const bodyParser = require('body-parser');
 
 dotenv.config();
 
+<<<<<<< HEAD
 // Connect to MongoDB     
+=======
+// Connect to MongoDB
+>>>>>>> 8611abcf15819f6c254519ee80fd7f8f4211285a
 connectDB();
 
 const app = express();
