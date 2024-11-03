@@ -26,20 +26,13 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
   if (!req.file) return next();
 
   const filename = `product-${uuidv4()}-${Date.now()}.jpeg`;
-<<<<<<< HEAD
   console.log(filename);
-=======
->>>>>>> 8611abcf15819f6c254519ee80fd7f8f4211285a
   
   await sharp(req.file.buffer)
     .resize(300, 300)
     .toFormat('jpeg')
     .jpeg({ quality: 90 })
-<<<<<<< HEAD
     .toFile(`uploads/${filename}`); 
-=======
-    .toFile(`uploads/${filename}`);
->>>>>>> 8611abcf15819f6c254519ee80fd7f8f4211285a
 
   // حفظ اسم الصورة في req.body ليتم استخدامها في قاعدة البيانات
   req.body.photos = [`uploads/${filename}`];

@@ -25,16 +25,9 @@ exports.getProductById = async (req, res) => {
 exports.addProduct = async (req, res) => {
   try {
     const { name, description, price, category } = req.body;
-<<<<<<< HEAD
 
     // If photos exist in req.body, use them; otherwise, fallback to an empty array
     const photos = req.body.photos || [];
-=======
-    console.log(name, description, price, category);
-
-    const photos = req.files ? req.files.map(file => file.path) : [];
-    console.log(photos);
->>>>>>> 8611abcf15819f6c254519ee80fd7f8f4211285a
 
     const newProduct = new Product({
       name,
@@ -48,7 +41,6 @@ exports.addProduct = async (req, res) => {
 
     res.status(201).json(newProduct);
   } catch (error) {
-<<<<<<< HEAD
     console.error(error); // Print error if it occurs
     res.status(500).json({ error: 'Server error' });
   }
@@ -83,39 +75,13 @@ exports.updateProductById = async (req, res) => {
     res.status(200).json(updatedProduct);
   } catch (error) {
     console.error(error); // Print error if it occurs
-=======
-    console.error(error); // لطباعة الخطأ في حال حدوثه
-    res.status(500).json({ error: 'Server error' });
-  }
-};
-// Update Product
-exports.updateProduct = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { name, description, price, category } = req.body;
-    const photos = req.files.map(file => file.path); // Update with new photos if any
-
-    const updatedProduct = await Product.findByIdAndUpdate(
-      id,
-      { name, description, price, category, photos },
-      { new: true }
-    );
-
-    if (!updatedProduct) return res.status(404).json({ message: 'Product not found' });
-
-    res.status(200).json(updatedProduct);
-  } catch (error) {  
->>>>>>> 8611abcf15819f6c254519ee80fd7f8f4211285a
     res.status(500).json({ error: 'Server error' });
   }
 };
 
-<<<<<<< HEAD
 
 
 
-=======
->>>>>>> 8611abcf15819f6c254519ee80fd7f8f4211285a
 // Delete Product
 exports.deleteProduct = async (req, res) => {
   try {
